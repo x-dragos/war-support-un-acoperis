@@ -2,12 +2,13 @@
 
 namespace App;
 
+use App\AllocationHistory;
 use DateTime;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Scout\Searchable;
 use OwenIt\Auditing\Contracts\Auditable;
@@ -28,6 +29,8 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property string $more_details
  * @property bool $need_car
  * @property bool $need_special_transport
+ * @property DateTime|null $first_housing_day
+ * @property int $needed_duration
  * @property DateTime|null $created_at
  * @property DateTime|null $updated_at
  * @property DateTime|null $deleted_at
@@ -57,7 +60,8 @@ class HelpRequest extends Model implements Auditable
         'created_at',
         'updated_at',
         'deleted_at',
-        'approved_at'
+        'approved_at',
+        'first_housing_day'
     ];
 
     /**
@@ -84,6 +88,11 @@ class HelpRequest extends Model implements Auditable
     public function accommodation(): BelongsToMany
     {
         return $this->belongsToMany(Accommodation::class, 'allocations', 'help_request_id', 'accommodation_id');
+    }
+
+    public function allocationsHistory(): HasMany
+    {
+        return $this->hasMany(AllocationHistory::class, 'help_request_id', 'id');
     }
 
     public function isCompleted(): bool
@@ -124,5 +133,10 @@ class HelpRequest extends Model implements Auditable
             'description' => $this->caretaker_full_name,
             'additional_information' => $this->diagnostic
         ];
+    }
+
+    public function scopeWhereFulfilled(Builder $query): Builder
+    {
+        return $query->where('status', self::STATUS_COMPLETED);
     }
 }

@@ -12,7 +12,7 @@
             @include('partials.aria-graph', ['id' => 3, 'type' => 'accomodationsApproved', 'title' => 'Numarul de persoane care au beneficiat de cazare'])
         </div>
         <div class="col-sm-3">
-            <div id="sidebar" class="sidebar-dash" >
+            <div id="sidebar" class="sidebar-dash">
                 <div class="sidebar__inner">
                     <div class="card shadow-sm">
                         <div class="card-body">
@@ -29,16 +29,26 @@
                     <div class="card shadow-sm">
                         <div class="card-body">
                             <h1 class="text-primary font-weight-600">
+                                <span class="count">{{ $dashboardStats["allocatedGuestsNumber"] }}</span>
+                                <i class="ni ni-single-02"></i>
+                            </h1>
+                            <small class="text-muted">{{ __('Current allocated guests number') }}</small>
+                        </div>
+                    </div>
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h1 class="text-primary font-weight-600">
                                 <span class="count">{{ $dashboardStats["requestsNumber"] }}</span>
                                 <i class="ni ni-archive-2"></i>
                             </h1>
                             <small class="text-muted">{{ __('Help requests number') }}</small>
                         </div>
                     </div>
+
                     <div class="card shadow-sm">
                         <div class="card-body">
                             <h1 class="text-primary font-weight-600">
-                                <span class="count">{{ $dashboardStats["allocatedGuestsNumber"] }}</span>
+                                <span class="count">{{ $dashboardStats["totalGuestsNumber"] }}</span>
                                 <i class="ni ni-single-02"></i>
                             </h1>
                             <small class="text-muted">{{ __('Solved requests number') }}</small>
@@ -62,7 +72,7 @@
 @section('scripts')
     <script>
         $(document).ready(function () {
-            setTimeout(function(){
+            setTimeout(function () {
                 $('#sidebar').stickySidebar({
                     containerSelector: '#main-content',
                     innerWrapperSelector: '.sidebar__inner',
@@ -72,7 +82,7 @@
             }, 300);
 
             $('.count').each(function () {
-                $(this).prop('Counter',0).animate({
+                $(this).prop('Counter', 0).animate({
                     Counter: $(this).text()
                 }, {
                     duration: 3000,
@@ -90,8 +100,8 @@
                 type: 'line',
                 data: {
                     datasets: [{
-                        backgroundColor: [ 'rgba(40, 174, 228, .3)' ],
-                        borderColor: [ 'rgb(40, 174, 228)' ],
+                        backgroundColor: ['rgba(40, 174, 228, .3)'],
+                        borderColor: ['rgb(40, 174, 228)'],
                         fill: 'start'
                     }]
                 },
@@ -117,7 +127,7 @@
                         yAxes: [{
                             ticks: {
                                 beginAtZero: true,
-                                userCallback: function(label, index, labels) {
+                                userCallback: function (label, index, labels) {
                                     // when the floored value is the same as the value we have a whole number
                                     if (Math.floor(label) === label) {
                                         return label;
